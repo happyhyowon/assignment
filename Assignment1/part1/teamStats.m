@@ -5,8 +5,8 @@
 %
 % OUTPUT : teamStats.txt
 %
-% created : 2019/03/18
-% modified : 2019/03/22
+% created  : 2019/03/18
+% modified : 2019/03/23
 
 % Initialization
 clear all; clc;
@@ -15,8 +15,12 @@ close all;
 % Load team member's information
 load('memberData.mat')
 
+% Get member number using the size function
+[col, low] = size(member);
+MaxCnt = low;
+
 % Calculating each member's lifetime expressed in seconds
-for i = 1:3
+for i = 1:MaxCnt
     member(i).age_in_seconds = yyyymmdd2secs(member(i).birthday);
 end
 
@@ -25,7 +29,7 @@ file = fopen('teamStats.txt', 'w');
 
 % Write down our team member's information (first name, last name,
 % birthday, lifetime expressed in seconds)
-for i=1:size(member, 2)
+for i=1:MaxCnt
     fprintf(file, '%s\n', member(i).firstname);
     fprintf(file, '%s\n', member(i).lastname);
     fprintf(file, '%s / %s / %s\n', member(i).birthday(1:4), member(i).birthday(5:6), member(i).birthday(7:8));
