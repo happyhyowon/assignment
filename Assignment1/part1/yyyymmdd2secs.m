@@ -40,19 +40,29 @@ end
 % Calculate time expressed in sec
 if(cYear == bYear)
     last_year_sum = 0;
+    
+    if(cMonth == bMonth)
+        last_year_sum = last_year_sum + (cDay - bDay);
+    else
+        for cnt = (bMonth+1):(cMonth - 1)
+            last_year_sum = (last_year_sum + (gullMonth(cnt)));
+        end
+        last_year_sum = (last_year_sum + (gullMonth(bMonth) - bDay));
+        last_year_sum = (last_year_sum + (cDay));
+    end
 else
     last_year_sum = uint64(last_year_sum + ((cYear - bYear - 1) * 365));
-end
-
-for cnt = (bMonth+1):12
+    
+    for cnt = (bMonth+1):12
     last_year_sum = (last_year_sum + (gullMonth(cnt)));
-end
-last_year_sum = (last_year_sum + (gullMonth(bMonth) - bDay));
+    end
+    last_year_sum = (last_year_sum + (gullMonth(bMonth) - bDay));
 
-for cnt = 1:(cMonth - 1)
-    last_year_sum = (last_year_sum + (gullMonth(cnt)));
+    for cnt = 1:(cMonth - 1)
+        last_year_sum = (last_year_sum + (gullMonth(cnt)));
+    end
+    last_year_sum = (last_year_sum + (cDay));
 end
-last_year_sum = (last_year_sum + (cDay));
 
 last_year_sum = last_year_sum * 24 * 60 * 60;
 last_year_sum = last_year_sum + (cTime * 60 * 60) + (cMin * 60) + cSec;
