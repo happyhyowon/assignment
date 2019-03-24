@@ -8,20 +8,12 @@
 % created  : 2019/03/18
 % modified : 2019/03/23
 
-% 3 -> 1, 2월을 초로
-% 5 -> 1, 2, 3, 4월을 초로
-% sum(guulMonth(1:currentMonth-1) .* DayToSec)
-
 function secOfLife = yyyymmdd2secs(birth)
 guulMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-MintoSec = 60;
-HourtoSec = 60 * 60;
-DayToSec = 24 * HourtoSec;
-MonthToSec = guulMonth .* DayToSec;
-YearToSec = sum(MonthToSec);
 
 % initial value
 secOfLife = NaN;
+last_year_sum = 1;
 
 % to change input parameter type to uint64
 bYear = (uint64(birth(1) - '0') * 1000) + (uint64(birth(2) - '0') * 100) + (uint64(birth(3) - '0') * 10) + uint64(birth(4) - '0');
@@ -43,32 +35,23 @@ if bYear > cYear || (bMonth < 1 || bMonth > 12) || (bDay > guulMonth(bMonth))
     error("Invalid input!!");
 end
 
+% last_year_sum += (y - my_year - 1) * 365; // 시작과 끝년도 빼고 * 365 
+last_year_sum = uint64(last_year_sum + ((cYear - bYear - 1) * 365));
+
+for cnt = (bMonth+1):12
+    last_year_sum = (last_year_sum + (guulMonth(cnt)));
+end
+last_year_sum = (last_year_sum + (guulMonth(bMonth) - bDay));
+
+for cnt = 1:(cMonth - 1)
+    last_year_sum = (last_year_sum + (guulMonth(cnt)));
+end
+last_year_sum = (last_year_sum + (cDay));
+
 % calculate time expressed in sec
-if cMonth == 1
-   cMonth = 0;
-else
-   cMonth = (cMonth-1) * sum(guulMonth(1:cMonth-1) .* DayToSec);
-end
-
-if bMonth == 1
-   bMonth = 0;
-else
-   bMonth = (bMonth-1) * sum(guulMonth(1:bMonth-1) .* DayToSec);
-end
-
-
-myLifeSec = uint64(((bYear-1) * YearToSec) + bMonth + ((bDay-1) * DayToSec));
-curSec = uint64(((cYear-1) *  YearToSec) + cMonth + ((cDay-1) * DayToSec) + (cTime * HourtoSec) + (cMin * MintoSec) + cSec);
-
-% abnormal case : error print
-if(myLifeSec > curSec)
-    error('There is invalid birth day!!!')
-    return
-end
-
-% calculate life time expressed in sec
-temp_sec = uint64(curSec - myLifeSec);
+last_year_sum = last_year_sum * 24 * 60 * 60;
+last_year_sum = last_year_sum + (cTime * 60 * 60) + (cMin * 60) + cSec;
 
 % return output data
-secOfLife = uint64(temp_sec);
-return;
+secOfLife = uint64(last_year_sum);
+return
