@@ -40,6 +40,7 @@ end
 % Calculate time expressed in sec
 if(cYear == bYear)
     last_year_sum = 0;
+    
 else
     last_year_sum = uint64(last_year_sum + ((cYear - bYear - 1) * 365));
 end
