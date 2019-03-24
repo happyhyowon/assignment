@@ -13,7 +13,7 @@ function secOfLife = yyyymmdd2secs(birth)
 % initial local value
 gullMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 secOfLife = NaN;
-last_year_sum = 1;
+last_year_sum = 0;
 
 % to change input parameter type to uint64
 bYear = (uint64(birth(1) - '0') * 1000) + (uint64(birth(2) - '0') * 100) + (uint64(birth(3) - '0') * 10) + uint64(birth(4) - '0');
@@ -38,7 +38,11 @@ elseif bYear == cYear && ((bMonth > cMonth) || ((bMonth == cMonth) && (bDay > cD
 end
 
 % Calculate time expressed in sec
-last_year_sum = uint64(last_year_sum + ((cYear - bYear - 1) * 365));
+if(cYear == bYear)
+    last_year_sum = 0;
+else
+    last_year_sum = uint64(last_year_sum + ((cYear - bYear - 1) * 365));
+end
 
 for cnt = (bMonth+1):12
     last_year_sum = (last_year_sum + (gullMonth(cnt)));
