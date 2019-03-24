@@ -18,10 +18,15 @@ load('experimentData');
 % convert table to array
 datas = table2array(experimentData);
 
+% get counts for samples and variables
+[sampleNum varNum] = size(datas);
+
 % calculate means and SEMs for heart rate, weight and exercise
 [means SEMs] = meanSEM(datas);
 
 % draw graphs for each variable including means and SEMs
+participants = 1:sampleNum;
+
 % create new window
 figure(1);
 
@@ -39,12 +44,12 @@ for i=1:3
     % plot red line for i-th datas 
     plot(datas(:, i), 'r');
     
-    % plot mean for i-th variable 
-    yline(means(i));
+    % plot mean for i-th variable
+    plot(participants, repmat(means(i), 1, sampleNum), 'b-');
     
     % plot SEM for i-th variable
-    yline(means(i) + SEMs(i), 'b--');
-    yline(means(i) - SEMs(i), 'b--');
+    plot(participants, repmat(means(i) + SEMs(i), 1, sampleNum), 'b--')
+    plot(participants, repmat(means(i) - SEMs(i), 1, sampleNum), 'b--');
 end
 
 % save plots
@@ -55,7 +60,7 @@ saveas(gcf, 'analysis.fig');
 figure(2);
 
 % helper variables for drawing scatter plots
-dataIndecies = [1 2; 1 3; 2 3]
+dataIndecies = [1 2; 1 3; 2 3];
 ylabels = [["Heart rate", "Weight"],
            ["Heart rate", "Exercise"],
            ["Weight", "Exercise"]];
@@ -75,3 +80,5 @@ end
 
 % save scatter plots
 saveas(gcf, 'analysis2.fig');
+
+% Comments!!
