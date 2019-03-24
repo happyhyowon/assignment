@@ -9,9 +9,9 @@
 % modified : 2019/03/23
 
 function secOfLife = yyyymmdd2secs(birth)
-guulMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-% initial value
+% initial local value
+gullMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 secOfLife = NaN;
 last_year_sum = 1;
 
@@ -21,7 +21,7 @@ bMonth = (uint64(birth(5) - '0') * 10) + uint64(birth(6) - '0');
 bDay = (uint64(birth(7) - '0') * 10) + uint64(birth(8) - '0');
 bTime = 0; % 12 AM (fixed)
 
-% to change current time type to uint64
+% To change current time type to uint64
 currentDay = uint64(clock);
 cYear = uint64(currentDay(1));
 cMonth = uint64(currentDay(2));
@@ -31,24 +31,25 @@ cMin = uint64(currentDay(5));
 cSec = uint64(currentDay(6));
 
 % Exception for Invalid input
-if bYear > cYear || (bMonth < 1 || bMonth > 12) || (bDay > guulMonth(bMonth))
+if bYear > cYear || (bMonth < 1 || bMonth > 12) || (bDay > gullMonth(bMonth))
+    error("Invalid input!!");
+elseif bYear == cYear && ((bMonth > cMonth) || ((bMonth == cMonth) && (bDay > cDay)))
     error("Invalid input!!");
 end
 
-% last_year_sum += (y - my_year - 1) * 365; // 시작과 끝년도 빼고 * 365 
+% Calculate time expressed in sec
 last_year_sum = uint64(last_year_sum + ((cYear - bYear - 1) * 365));
 
 for cnt = (bMonth+1):12
-    last_year_sum = (last_year_sum + (guulMonth(cnt)));
+    last_year_sum = (last_year_sum + (gullMonth(cnt)));
 end
-last_year_sum = (last_year_sum + (guulMonth(bMonth) - bDay));
+last_year_sum = (last_year_sum + (gullMonth(bMonth) - bDay));
 
 for cnt = 1:(cMonth - 1)
-    last_year_sum = (last_year_sum + (guulMonth(cnt)));
+    last_year_sum = (last_year_sum + (gullMonth(cnt)));
 end
 last_year_sum = (last_year_sum + (cDay));
 
-% calculate time expressed in sec
 last_year_sum = last_year_sum * 24 * 60 * 60;
 last_year_sum = last_year_sum + (cTime * 60 * 60) + (cMin * 60) + cSec;
 
